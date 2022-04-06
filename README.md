@@ -1,5 +1,6 @@
 # ratpack-hello-world
-Ratpack.groovy runs out of the box but there will be several steps during setup that need to happen to allow spock testing to work
+Ratpack.groovy runs out of the box 
+but there will be several steps during setup that need to happen to allow spock testing to work
   - under settings/preferences -> Build, Execution, Deployment -> Build Tools -> Gradle: 
     - Windows Shortcut ( Ctrl _ Alt + s )
     - Mac Shortcut ( Command + , )
