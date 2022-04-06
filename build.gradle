@@ -1,0 +1,23 @@
+buildscript {
+    repositories {
+        maven { url "http://oss.jfrog.org/artifactory/oss-realease-local" }
+        jcenter()
+    }
+    dependencies {
+        classpath 'io.ratpack:ratpack-gradle:1.9.0'
+    }
+}
+
+// The “ratpack” plugin applies the “application” plugin, making it easy to create a standalone application.
+// See: http://gradle.org/docs/current/userguide/application_plugin.html
+apply plugin: "io.ratpack.ratpack-groovy"
+
+// The “ratpack” plugin is IDEA aware.
+// It will create a run configuration in IDEA to launch your app in your IDE, with hot reloading.
+apply plugin: "idea"
+
+repositories {
+    maven { url "http://oss.jfrog.org/artifactory/oss-realease-local" }
+    jcenter()
+}
+
