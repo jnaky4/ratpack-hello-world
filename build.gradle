@@ -20,9 +20,6 @@ apply plugin: "io.ratpack.ratpack-groovy"
 // It will create a run configuration in IDEA to launch your app in your IDE, with hot reloading.
 apply plugin: "idea"
 
-group 'org.example'
-version '1.0-SNAPSHOT'
-
 repositories {
     maven { url "http://oss.jfrog.org/artifactory/oss-realease-local" }
     mavenCentral()
