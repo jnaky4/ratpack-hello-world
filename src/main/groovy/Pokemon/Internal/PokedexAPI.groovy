@@ -5,6 +5,7 @@ import Models.PokemonResponse
 import Models.ResultsResponse
 import Pokemon.Pokedex
 import com.fasterxml.jackson.core.JsonParser
+import groovy.json.JsonSlurper
 import ratpack.exec.Promise
 import ratpack.http.HttpUrlBuilder
 import ratpack.service.Service
@@ -46,19 +47,22 @@ class PokedexAPI implements Pokedex, Service{
                 .path(path)
                 .params("limit", "$limit")
                 .build()
-
+//        println uri
         httpClient.get(uri){
             it.headers {headers ->
                 headers.add("Accept", "application/json")
             }
         }.map { response ->
+//            println "response" + response.statusCode
+//            println response.body.text
             response.status.is2xx() ? response.body.text : response.status.code.toString()
         }
     }
 
     @Override
-    Promise<Pokemon> getPokemon(String path){
-        getApi(path).map {
+    Promise<Pokemon> getPokemon(String pokeID_orName){
+//        println "GETTING A POKEMON $pokeID_orName"
+        getApi("pokemon/$pokeID_orName").map {
             //mapper will map matching values from the json response to the class fields
             //https://www.baeldung.com/jackson-object-mapper-tutorial
             mapper.readValue(it, PokemonResponse)
@@ -66,7 +70,6 @@ class PokedexAPI implements Pokedex, Service{
             Pokemon.from(pr)
         }
     }
-
 
     Promise<Map<String,String>> getResources() {
         getApi( "",2000).map { response ->
@@ -80,11 +83,10 @@ class PokedexAPI implements Pokedex, Service{
 
     @Override
     Promise<ResultsResponse> getResources(String resource){
+//        println "get a Resource $resource"
+//        def response = getApi(resource, 2000)
+//        new JsonSlurper().parseText(response)
         getApi(resource, 2000).map { response ->
-//            def rr = mapper.readValue(response, ResultsResponse).results.collect{ it ->
-//                it["url"] = it["url"].replace(baseUrl, "http://localhost:5050")
-//            }
-
             def rr = mapper.readValue(response, ResultsResponse)
             rr.results.collect{ it ->
                 it["url"] = it["url"].replace(baseUrl, "http://localhost:5050")

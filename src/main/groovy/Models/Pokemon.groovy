@@ -12,6 +12,7 @@ class Pokemon {
     List<String> moves
 
     static Pokemon from(PokemonResponse pr) {
+        println "$pr.id $pr.name"
         return new Pokemon(
                 name: pr.name,
                 id: pr.id,
