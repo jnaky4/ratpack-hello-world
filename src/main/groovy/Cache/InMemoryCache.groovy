@@ -7,17 +7,12 @@ import com.google.inject.Inject
 
 import java.util.concurrent.ConcurrentHashMap
 
-@Singleton
 abstract class InMemoryCache<T,A>{
     ConcurrentHashMap<T, A> cache = new ConcurrentHashMap<>()
-
-//    @Inject
-//    InMemoryCache(){}
 
     boolean addToCache(T key, A value){
         println "Adding $key"
         cache.put(key, value)
-        println "Done"
         return true
     }
 
@@ -27,11 +22,7 @@ abstract class InMemoryCache<T,A>{
     }
 
     Object getFromCache(T key){
-        println key
-        def item = cache[key]
-        println item
-        return item
-//        return cache[key] ?: [] as Object
+        return cache[key] ?: null
     }
 
     ConcurrentHashMap getAllCache(){

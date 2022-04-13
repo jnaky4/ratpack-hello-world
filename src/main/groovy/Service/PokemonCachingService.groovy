@@ -65,7 +65,7 @@ class PokemonCachingService implements Service{
             def t = it.collectEntries { ExecResult exRes ->
                 if (exRes.isSuccess()) {
                     def pokemon = exRes.value as Pokemon
-                    [(pokemon.id): pokemon]
+                    [(pokemon.id): pokemon] //groovy string cannot be set as key, (gstring) converts to java string
                 } else {
                     println "Failed exec result $exRes.error"
                     [:]

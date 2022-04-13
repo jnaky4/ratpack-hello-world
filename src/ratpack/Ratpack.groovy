@@ -1,6 +1,7 @@
 import Cache.Cache
 import Cache.InMemoryCache
 import Cache.Internal.PokemonCache
+import Cache.Internal.MoveCache
 import Pokemon.Internal.PokedexAPI
 import Pokemon.Pokedex
 import Service.PokemonCachingService
@@ -13,7 +14,7 @@ import ratpack.http.Status
 ratpack {
 	bindings {
 		bind(PokemonCache)
-//		bind(InMemoryCache, PokemonCache)
+		bind(MoveCache)
 		bind(PokemonCachingService)
 		bind(Pokedex, PokedexAPI) //binding PokedexAPI as the implementation of Pokedex interface
 	}
@@ -34,20 +35,27 @@ ratpack {
 		}
 
 		//todo implement offset arg
-		get(":resource/:id_or_name") { Pokedex p, PokemonCache c->
+		get(":resource/:id_or_name") { Pokedex p, PokemonCache pc, MoveCache mc->
 			switch (pathTokens.resource) {
 				case ("pokemon"):
 					//todo fix issue so abstract getfromcache
 //					render p.fetchPokemon(pathTokens.id_or_name).then{
 //						render(json(it))
 //					}
-					def poke = c.getFromCache(pathTokens.id_or_name as Integer)
+					def poke = pc.getFromCache(pathTokens.id_or_name as Integer)
 					poke != null ? render(json(poke)) : p.getPokemon(pathTokens.id_or_name).then {
-						c.addToCache(it.id, it)
+						println "${pathTokens.id_or_name} not in cache, fetching"
+						pc.addToCache(it.id, it)
 						render(json(it))
 					}
 					break
 				case ("move"):
+					def move = mc.getFromCache(pathTokens.id_or_name as Integer)
+					move != null ? render(json(move)) : p.getMove(pathTokens.id_or_name).then {
+						println "${pathTokens.id_or_name} not in cache, fetching"
+						mc.addToCache(it.id, it)
+						render(json(it))
+					}
 					p.getMove(pathTokens.id_or_name).then {
 						render(json(it))
 					}

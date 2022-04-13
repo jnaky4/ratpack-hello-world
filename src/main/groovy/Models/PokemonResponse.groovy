@@ -1,15 +1,19 @@
 package Models
 
+import Enums.Type
+
 class PokemonResponse {
     String name
     int id
     int base_experience
     int height
     int weight
-    List<PokemonMoveResponse> moves
+    List<PokemonMovesResponse> moves
+    List<PokemonStatsResponse> stats
+    List<TypesResponse> types
 }
 
-class PokemonMoveResponse {
+class PokemonMovesResponse {
     MoveNameResponse move
 }
 
@@ -17,10 +21,27 @@ class MoveNameResponse{
     String name
     String url
 }
+class PokemonStatsResponse{
+    int base_stat
+    StatResponse stat
+}
+class StatResponse{
+    String name
+    String url
+}
+class TypesResponse{
+    TypeResponse type
+}
+class TypeResponse{
+    String name
+    String url
+}
 
 class Pokemon {
-    String name
     int id
+    String name
+    List<String> types
+    Map<String,Integer> stats
     int base_experience
     int height
     int weight
@@ -33,9 +54,17 @@ class Pokemon {
                 base_experience: pr.base_experience,
                 height: pr.height,
                 weight: pr.weight,
-                moves: pr.moves.collect {
+                moves: pr.moves.collect { //use collect to create a list from response
                     it.move.name
-                }
+                },
+                types: pr.types.collect {
+                    it.type.name
+                },
+                //Use CollectEntries to create a map from a response
+                stats: pr.stats.collectEntries{it ->
+                    [(it.stat.name), it.base_stat]
+                } as Map<String, Integer>,
+
         )
     }
 }
