@@ -38,16 +38,16 @@ class PokemonCachingService implements Service{
         scheduleCacheUpdate()
     }
 
-    private scheduleCacheUpdate(){
+    private scheduleCacheUpdate(){ //todo implement catchPokemon size to config setting
         Execution.fork().onComplete{
             Execution.current().controller.executor.schedule(this.&scheduleCacheUpdate, this.updateInterval, TimeUnit.MILLISECONDS)
         }.onError { e ->
             println "Failed to schedule cache update $e.stackTrace"
         }.onComplete{
-            println "Caching Succeeded"
+            println "Caching Complete"
         }.start{
             println "Starting Caching"
-            cachePokemon().then{
+            cachePokemon(2).then{
                 it.each{
                     cache.addToCache(it.key, it.value)
                 }
@@ -55,9 +55,10 @@ class PokemonCachingService implements Service{
         }
     }
 
-    private Promise<Map<Integer, Pokemon>> cachePokemon(){
+    // current number of pokemon 897
+    private Promise<Map<Integer, Pokemon>> cachePokemon(int size = 897){
         def promises = []
-        for(i in 1..2){ // current number of pokemon 897
+        for(i in 1..size){
             promises.add(api.getPokemon("$i").map{ Pokemon p -> p })
         }
         ParallelBatch.of(promises).yieldAll().map{
